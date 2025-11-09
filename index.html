@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COLID - 创新科技解决方案</title>
+    <title>COLID - 丧尸入侵游戏</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -45,16 +45,22 @@
                             800: '#663a00',
                             900: '#331f00',
                         },
+                        game: {
+                            green: '#4CAF50',
+                            red: '#F44336',
+                            dark: '#212121'
+                        }
                     },
                     fontFamily: {
                         sans: ['Inter', 'system-ui', 'sans-serif'],
+                        game: ['"Press Start 2P"', 'cursive', 'sans-serif']
                     },
                 },
             },
         };
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Press+Start+2P&display=swap');
 
         html {
             scroll-behavior: smooth;
@@ -119,27 +125,69 @@
             background-position: center;
         }
 
-        .parallax {
-            perspective: 1000px;
-            transform-style: preserve-3d;
+        /* 游戏标题样式 */
+        .game-title {
+            font-family: 'Press Start 2P', cursive;
+            text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
+            letter-spacing: -1px;
         }
 
-        .parallax-layer {
+        /* 游戏截图展示区 */
+        .screenshot-container {
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #333;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .screenshot-container::after {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            bottom: 0;
-            transform: translateZ(0);
-            transition: transform 0.3s ease-out;
+            height: 4px;
+            background: linear-gradient(90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+            background-size: 200% 100%;
+            animation: scanline 2s linear infinite;
         }
 
-        .dark .border-gray-200 {
-            border-color: #475569;
+        @keyframes scanline {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
         }
 
-        .dark .shadow-lg {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        /* 游戏按钮样式 */
+        .game-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            transform: translateY(0);
+        }
+
+        .game-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .game-btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .game-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .game-btn:hover::before {
+            left: 100%;
         }
 
         /* 滚动动画 */
@@ -164,7 +212,7 @@
         /* 响应式调整 */
         @media (max-width: 768px) {
             .hero-content h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
 
             .hero-content p {
@@ -173,6 +221,10 @@
 
             #product-canvas {
                 height: 300px;
+            }
+
+            .screenshot-container {
+                height: 200px;
             }
         }
 
@@ -247,7 +299,7 @@
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#home" class="text-gray-800 hover:text-primary-500 transition-colors">首页</a>
                     <a href="#about" class="text-gray-800 hover:text-primary-500 transition-colors">关于我们</a>
-                    <a href="#products" class="text-gray-800 hover:text-primary-500 transition-colors">产品</a>
+                    <a href="#products" class="text-gray-800 hover:text-primary-500 transition-colors">游戏产品</a>
                     <a href="#team" class="text-gray-800 hover:text-primary-500 transition-colors">团队</a>
                     <a href="#contact" class="text-gray-800 hover:text-primary-500 transition-colors">联系我们</a>
                     <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
@@ -268,7 +320,7 @@
                 <div class="flex flex-col space-y-3">
                     <a href="#home" class="text-gray-800 hover:text-primary-500 transition-colors py-2">首页</a>
                     <a href="#about" class="text-gray-800 hover:text-primary-500 transition-colors py-2">关于我们</a>
-                    <a href="#products" class="text-gray-800 hover:text-primary-500 transition-colors py-2">产品</a>
+                    <a href="#products" class="text-gray-800 hover:text-primary-500 transition-colors py-2">游戏产品</a>
                     <a href="#team" class="text-gray-800 hover:text-primary-500 transition-colors py-2">团队</a>
                     <a href="#contact" class="text-gray-800 hover:text-primary-500 transition-colors py-2">联系我们</a>
                     <button id="mobile-theme-toggle" class="flex items-center space-x-2 p-2 rounded-md text-gray-600 hover:text-primary-500 hover:bg-gray-100 focus:outline-none">
@@ -285,18 +337,18 @@
         <div class="absolute inset-0 bg-gradient-to-r from-primary-900/70 to-primary-700/50"></div>
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="hero-content text-center text-white max-w-3xl mx-auto">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight game-title">
                     丧尸入侵<br><span class="text-secondary-400">生存挑战</span>
                 </h1>
                 <p class="text-xl md:text-2xl mb-8 opacity-90">
                     体验刺激的生存类游戏，在丧尸横行的世界中生存下去，收集资源，建造基地，抵御丧尸的攻击
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="#products" class="bg-secondary-500 hover:bg-secondary-600 text-white font-medium py-3 px-8 rounded-full transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 duration-300">
-                        探索产品
+                    <a href="#game-main" class="game-btn bg-game-green hover:bg-green-600 text-white font-bold py-3 px-8 rounded transition-colors shadow-lg">
+                        开始游戏 <i class="fas fa-play ml-2"></i>
                     </a>
-                    <a href="#contact" class="bg-transparent border-2 border-white hover:bg-white hover:text-primary-700 text-white font-medium py-3 px-8 rounded-full transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 duration-300">
-                        联系我们
+                    <a href="#products" class="game-btn bg-transparent border-2 border-white hover:bg-white hover:text-primary-700 text-white font-bold py-3 px-8 rounded transition-colors shadow-lg">
+                        了解更多 <i class="fas fa-info-circle ml-2"></i>
                     </a>
                 </div>
             </div>
@@ -310,32 +362,48 @@
     <section id="about" class="py-20 bg-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">关于我们</h2>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">关于游戏</h2>
                 <div class="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                    COLID 是一家专注于游戏开发的工作室，我们使用 TurboWarp Desktop 创作有趣的游戏作品，为玩家提供独特的游戏体验。
+                    《丧尸入侵》是一款刺激的生存类游戏，由 TurboWarp Desktop 制作，适合各年龄段玩家体验
                 </p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                 <div class="fade-in">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">关于我们</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">游戏背景</h3>
                     <p class="text-gray-600 mb-6">
-                        COLID 是一家专注于游戏开发的团队，我们使用 <a href="https://desktop.turbowarp.org/" target="_blank" class="text-primary-500 hover:underline">TurboWarp Desktop</a>（Scratch 的增强版）创作有趣的游戏作品，为玩家提供独特的游戏体验。
+                        一场突如其来的病毒爆发，让世界陷入了混乱。城市被丧尸占领，生存成为了唯一的目标。作为少数的幸存者之一，你需要在这个危机四伏的世界中寻找资源，建造安全的避难所，与丧尸对抗，寻找其他幸存者，揭开病毒爆发的真相。
                     </p>
                     <p class="text-gray-600 mb-6">
-                        我们的团队由热爱游戏开发的专业人士组成，致力于打造高质量、富有创意的游戏作品，让玩家享受游戏的乐趣。
+                        每一个决定都可能影响你的生存，谨慎选择，活下去才有希望。
                     </p>
                 </div>
                 
                 <div class="fade-in">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">我们的理念</h3>
-                    <p class="text-gray-600 mb-6">
-                        我们相信游戏不仅是娱乐，更是一种艺术形式和表达方式。我们致力于通过游戏传递积极的价值观，激发玩家的创造力和想象力。
-                    </p>
-                    <p class="text-gray-600">
-                        我们的游戏作品注重玩家体验，追求创新和独特性，让每一位玩家都能在游戏中找到乐趣和挑战。
-                    </p>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">游戏特色</h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary-500 mt-1 mr-3"></i>
+                            <span>自由探索开放世界，收集稀缺资源</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary-500 mt-1 mr-3"></i>
+                            <span>建造并升级防御基地，抵御丧尸进攻</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary-500 mt-1 mr-3"></i>
+                            <span>多种武器系统，策略性对抗不同类型丧尸</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary-500 mt-1 mr-3"></i>
+                            <span>最新版本支持设置与存档功能，随时继续游戏</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary-500 mt-1 mr-3"></i>
+                            <span>支持模组扩展，丰富游戏体验</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
             
@@ -361,67 +429,201 @@
         </div>
     </section>
 
-    <!-- 产品展示 -->
-    <section id="products" class="py-20 bg-gray-50">
+    <!-- 游戏主页面展示 -->
+    <section id="game-main" class="py-20 bg-gray-50">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">我们的产品</h2>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4 game-title text-primary-600">游戏主页面</h2>
                 <div class="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                    探索 COLID 的创新产品系列，从操作系统到移动应用，我们提供全方位的解决方案。
+                    最新版本已上线！新增设置和存档功能，让游戏体验更加流畅
                 </p>
             </div>
             
-            <!-- 3D 产品展示 -->
-            <div class="mb-16 fade-in">
-                <div class="bg-white p-4 rounded-xl shadow-lg">
-                    <canvas id="product-canvas" class="rounded-lg"></canvas>
+            <div class="max-w-4xl mx-auto fade-in">
+                <!-- 游戏主页面截图 -->
+                <div class="screenshot-container rounded-xl mb-8">
+                    <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/afc3406749a4498f89b1f9ce9ea2a592.png~tplv-a9rns2rl98-24:720:720.png?rcl=202511082149076201ECDBCE704031B23D&rk3s=8e244e95&rrcfp=8a172a1a&x-expires=1763214547&x-signature=wxvbmWWXTaW2UWMQ8b1bB%2FXw9wA%3D" 
+                         alt="丧尸入侵游戏主页面" 
+                         class="w-full h-auto rounded-lg">
+                </div>
+                
+                <!-- 快速试玩区域 -->
+                <div class="text-center mb-12">
+                    <a href="https://liha321.github.io/Zombie-Invasion-Main-Body/" target="_blank" class="game-btn bg-game-green hover:bg-green-600 text-white text-xl font-bold py-4 px-10 rounded transition-colors inline-flex items-center">
+                        <i class="fas fa-gamepad mr-3"></i> 快速试玩
+                    </a>
+                    <p class="text-gray-500 mt-4">支持浏览器直接运行，无需下载安装</p>
+                </div>
+                
+                <!-- 最新功能介绍 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <div class="text-primary-500 text-3xl mb-4">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">新增设置功能</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-primary-500 mt-1 mr-2"></i>
+                                <span>调整游戏难度，适合不同玩家</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-primary-500 mt-1 mr-2"></i>
+                                <span>自定义画面效果，优化性能</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-primary-500 mt-1 mr-2"></i>
+                                <span>设置音效和背景音乐音量</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <div class="text-primary-500 text-3xl mb-4">
+                            <i class="fas fa-save"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">存档功能上线</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-primary-500 mt-1 mr-2"></i>
+                                <span>自动保存游戏进度，无需手动操作</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-primary-500 mt-1 mr-2"></i>
+                                <span>多存档槽位，支持不同游戏进程</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-primary-500 mt-1 mr-2"></i>
+                                <span>随时读取存档，继续上次游戏</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- 产品展示 -->
+    <section id="products" class="py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">游戏产品</h2>
+                <div class="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    探索《丧尸入侵》系列产品，包括游戏本体和扩展模组
+                </p>
+            </div>
             
-            <!-- 产品列表 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- 产品 1: 丧尸入侵游戏 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 fade-in">
-                    <div class="h-64 bg-primary-100 flex items-center justify-center p-4">
-                        <div class="text-center">
-                            <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/afc3406749a4498f89b1f9ce9ea2a592.png~tplv-a9rns2rl98-24:720:720.png?rcl=202511082149076201ECDBCE704031B23D&rk3s=8e244e95&rrcfp=8a172a1a&x-expires=1763214547&x-signature=wxvbmWWXTaW2UWMQ8b1bB%2FXw9wA%3D" alt="丧尸入侵游戏图标" class="max-h-full max-w-full object-contain">
-                        </div>
-                    </div>
+            <!-- 游戏产品展示区 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- 游戏本体 -->
+                <div class="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 fade-in">
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">丧尸入侵游戏</h3>
-                        <p class="text-gray-600 mb-4">
-                            刺激的生存类游戏，由<a href="https://desktop.turbowarp.org/" target="_blank" class="text-primary-500 hover:underline">TurboWarp Desktop</a>（Scratch 的增强版）制作。在游戏中，你需要在丧尸横行的世界中生存下去，收集资源，建造基地，抵御丧尸的攻击。
-                        </p>
-                        <div class="flex items-center text-sm text-gray-500 mb-4">
-                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full mr-2">游戏本体</span>
-                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">TurboWarp</span>
+                        <span class="inline-block bg-game-green text-white text-sm font-bold px-3 py-1 rounded-full mb-4">游戏本体</span>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">丧尸入侵</h3>
+                        
+                        <!-- 游戏截图展示 -->
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="screenshot-container rounded-lg">
+                                <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/72d526c84c6d47bda90df3b1e9a52047~tplv-a9rns2rl98-image.image?rcl=2025110821280618224FB838C12EBA1AEE&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765200533&x-signature=aP6zqCerYdxfpZQ7pQdK5TIL90I%3D" 
+                                     alt="游戏场景1" 
+                                     class="w-full h-full object-cover rounded-lg">
+                            </div>
+                            <div class="screenshot-container rounded-lg">
+                                <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/19478607d566407eb6c3c6c1a3d29283~tplv-a9rns2rl98-image.image?rcl=2025110821280618224FB838C12EBA1AEE&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765200508&x-signature=68SZaAsesz2VEKiTZda8fhevNRw%3D" 
+                                     alt="游戏场景2" 
+                                     class="w-full h-full object-cover rounded-lg">
+                            </div>
                         </div>
-                        <button class="product-detail-btn text-primary-500 hover:text-primary-600 font-medium flex items-center" data-product="zombie-invasion">
-                            了解更多 <i class="fas fa-arrow-right ml-2"></i>
-                        </button>
+                        
+                        <h4 class="text-xl font-semibold text-gray-800 mb-3">游戏特色</h4>
+                        <ul class="space-y-2 text-gray-600 mb-6">
+                            <li class="flex items-start">
+                                <i class="fas fa-bullet text-primary-500 mt-1 mr-3"></i>
+                                <span>卡通风格生存玩法，收集资源、抵御丧尸</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-bullet text-primary-500 mt-1 mr-3"></i>
+                                <span>多种武器系统，应对不同类型的丧尸</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-bullet text-primary-500 mt-1 mr-3"></i>
+                                <span>建造防御基地，策略性布局防御工事</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-bullet text-primary-500 mt-1 mr-3"></i>
+                                <span>最新版本支持设置与存档功能</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-bullet text-primary-500 mt-1 mr-3"></i>
+                                <span>由 TurboWarp Desktop 制作，流畅运行</span>
+                            </li>
+                        </ul>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <a href="https://desktop.turbowarp.org/" target="_blank" class="game-btn bg-game-green hover:bg-green-600 text-white font-bold py-3 px-6 rounded transition-colors text-center">
+                                <i class="fas fa-play mr-2"></i> 开始游戏
+                            </a>
+                            <button class="product-detail-btn text-primary-500 hover:text-primary-600 font-medium flex items-center justify-center border border-primary-500 hover:bg-primary-50 py-3 px-6 rounded transition-colors" data-product="zombie-invasion">
+                                查看详情 <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- 产品 2: 丧尸入侵模组 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 fade-in" style="transition-delay: 0.2s;">
-                    <div class="h-64 bg-primary-100 flex items-center justify-center p-4">
-                        <div class="text-center">
-                            <i class="fas fa-cubes text-8xl text-primary-500"></i>
-                        </div>
-                    </div>
+                <!-- 游戏模组 -->
+                <div class="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 fade-in" style="transition-delay: 0.3s;">
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">丧尸入侵模组</h3>
-                        <p class="text-gray-600 mb-4">
-                            为"丧尸入侵"游戏设计的模组，添加了新的武器、敌人、地图和游戏模式，丰富游戏体验。
-                        </p>
-                        <div class="flex items-center text-sm text-gray-500 mb-4">
-                            <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full mr-2">游戏模组</span>
-                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">扩展内容</span>
+                        <span class="inline-block bg-purple-600 text-white text-sm font-bold px-3 py-1 rounded-full mb-4">扩展模组</span>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">丧尸入侵 模组</h3>
+                        
+                        <!-- 模组截图展示 -->
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="screenshot-container rounded-lg">
+                                <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/d2ef1130dbe34332b369618aec981d4f~tplv-a9rns2rl98-image.image?rcl=2025110821280618224FB838C12EBA1AEE&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765200549&x-signature=06csiN3psGZ4rtULSLS11fPYqoY%3D" 
+                                     alt="模组场景1" 
+                                     class="w-full h-full object-cover rounded-lg">
+                            </div>
+                            <div class="screenshot-container rounded-lg">
+                                <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/19478607d566407eb6c3c6c1a3d29283~tplv-a9rns2rl98-image.image?rcl=2025110821280618224FB838C12EBA1AEE&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765200508&x-signature=68SZaAsesz2VEKiTZda8fhevNRw%3D" 
+                                     alt="模组场景2" 
+                                     class="w-full h-full object-cover rounded-lg">
+                            </div>
                         </div>
-                        <button class="product-detail-btn text-primary-500 hover:text-primary-600 font-medium flex items-center" data-product="zombie-invasion-mod">
-                            了解更多 <i class="fas fa-arrow-right ml-2"></i>
-                        </button>
+                        
+                        <h4 class="text-xl font-semibold text-gray-800 mb-3">模组亮点</h4>
+                        <ul class="space-y-2 text-gray-600 mb-6">
+                            <li class="flex items-start">
+                                <i class="fas fa-bullet text-primary-500 mt-1 mr-3"></i>
+                                <span>新增多种丧尸类型，包括变异丧尸和Boss</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-bullet text-primary-500 mt-1 mr-3"></i>
+                                <span>扩展武器系统，加入火焰喷射器、火箭筒等</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-bullet text-primary-500 mt-1 mr-3"></i>
+                                <span>开放新地图场景，探索更多区域</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-bullet text-primary-500 mt-1 mr-3"></i>
+                                <span>支持多人合作模式，组队生存更有趣</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-bullet text-primary-500 mt-1 mr-3"></i>
+                                <span>按照游戏主页面风格设计，无缝衔接体验</span>
+                            </li>
+                        </ul>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <a href="https://desktop.turbowarp.org/" target="_blank" class="game-btn bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded transition-colors text-center">
+                                <i class="fas fa-download mr-2"></i> 下载模组
+                            </a>
+                            <button class="product-detail-btn text-primary-500 hover:text-primary-600 font-medium flex items-center justify-center border border-primary-500 hover:bg-primary-50 py-3 px-6 rounded transition-colors" data-product="zombie-invasion-mod">
+                                查看详情 <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -432,10 +634,10 @@
     <section id="team" class="py-20 bg-gray-50">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">我们的团队</h2>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">开发团队</h2>
                 <div class="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                    由一群充满激情和创造力的专业人士组成，致力于推动科技创新。
+                    由一群充满激情和创造力的游戏开发者组成，致力于打造优质游戏体验
                 </p>
             </div>
             
@@ -449,9 +651,9 @@
                     </div>
                     <div class="p-6 text-center">
                         <h3 class="text-xl font-bold text-gray-800 mb-1">张明</h3>
-                        <p class="text-primary-500 mb-3">创始人 & CEO</p>
+                        <p class="text-primary-500 mb-3">游戏主策划</p>
                         <p class="text-gray-600 text-sm mb-4">
-                            拥有10年软件开发经验，专注于操作系统架构设计。
+                            负责游戏整体玩法设计和剧情策划
                         </p>
                         <div class="flex justify-center space-x-4">
                             <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
@@ -476,9 +678,9 @@
                     </div>
                     <div class="p-6 text-center">
                         <h3 class="text-xl font-bold text-gray-800 mb-1">李华</h3>
-                        <p class="text-primary-500 mb-3">CTO</p>
+                        <p class="text-primary-500 mb-3">程序开发</p>
                         <p class="text-gray-600 text-sm mb-4">
-                            技术专家，负责产品核心架构和技术路线规划。
+                            使用 TurboWarp 实现游戏功能和逻辑
                         </p>
                         <div class="flex justify-center space-x-4">
                             <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
@@ -503,9 +705,9 @@
                     </div>
                     <div class="p-6 text-center">
                         <h3 class="text-xl font-bold text-gray-800 mb-1">王芳</h3>
-                        <p class="text-primary-500 mb-3">产品经理</p>
+                        <p class="text-primary-500 mb-3">美术设计</p>
                         <p class="text-gray-600 text-sm mb-4">
-                            负责产品规划和用户体验设计，专注于用户需求分析。
+                            负责游戏角色、场景和UI界面设计
                         </p>
                         <div class="flex justify-center space-x-4">
                             <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
@@ -530,9 +732,9 @@
                     </div>
                     <div class="p-6 text-center">
                         <h3 class="text-xl font-bold text-gray-800 mb-1">陈强</h3>
-                        <p class="text-primary-500 mb-3">设计师</p>
+                        <p class="text-primary-500 mb-3">测试与优化</p>
                         <p class="text-gray-600 text-sm mb-4">
-                            UI/UX设计师，负责产品界面设计和交互体验优化。
+                            负责游戏测试和性能优化，提升体验
                         </p>
                         <div class="flex justify-center space-x-4">
                             <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
@@ -548,13 +750,6 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- 团队照片 -->
-            <div class="mt-16 fade-in">
-                <div class="bg-white p-4 rounded-xl shadow-lg">
-                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/d2ef1130dbe34332b369618aec981d4f~tplv-a9rns2rl98-image.image?rcl=2025110821280618224FB838C12EBA1AEE&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765200549&x-signature=06csiN3psGZ4rtULSLS11fPYqoY%3D" alt="团队合影" class="w-full h-auto rounded-lg">
-                </div>
-            </div>
         </div>
     </section>
 
@@ -565,7 +760,7 @@
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">联系我们</h2>
                 <div class="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                    有任何问题或合作意向？请随时与我们联系，我们将尽快回复您。
+                    有任何问题或建议？请随时与我们联系，我们将尽快回复您
                 </p>
             </div>
             
@@ -591,7 +786,7 @@
                         
                         <div class="mb-6">
                             <label for="message" class="block text-gray-700 font-medium mb-2">消息</label>
-                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="请输入您的消息" required></textarea>
+                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="请输入您的问题或建议" required></textarea>
                         </div>
                         
                         <button type="submit" id="submit-btn" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center">
@@ -695,20 +890,23 @@
                     <h3 class="text-xl font-bold mb-4">快速链接</h3>
                     <ul class="space-y-2">
                         <li><a href="#home" class="text-gray-400 hover:text-white transition-colors">首页</a></li>
-                        <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">关于我们</a></li>
-                        <li><a href="#products" class="text-gray-400 hover:text-white transition-colors">产品</a></li>
-                        <li><a href="#team" class="text-gray-400 hover:text-white transition-colors">团队</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">关于游戏</a></li>
+                        <li><a href="#game-main" class="text-gray-400 hover:text-white transition-colors">游戏主页面</a></li>
+                        <li><a href="#products" class="text-gray-400 hover:text-white transition-colors">游戏产品</a></li>
+                        <li><a href="#team" class="text-gray-400 hover:text-white transition-colors">开发团队</a></li>
                         <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors">联系我们</a></li>
                     </ul>
                 </div>
                 
-                <!-- 产品 -->
+                <!-- 游戏资源 -->
                 <div>
-                    <h3 class="text-xl font-bold mb-4">游戏产品</h3>
+                    <h3 class="text-xl font-bold mb-4">游戏资源</h3>
                     <ul class="space-y-2">
-                        <li><a href="#products" class="text-gray-400 hover:text-white transition-colors">丧尸入侵游戏</a></li>
-                        <li><a href="#products" class="text-gray-400 hover:text-white transition-colors">丧尸入侵模组</a></li>
+                        <li><a href="#game-main" class="text-gray-400 hover:text-white transition-colors">丧尸入侵 游戏本体</a></li>
+                        <li><a href="#products" class="text-gray-400 hover:text-white transition-colors">丧尸入侵 扩展模组</a></li>
                         <li><a href="https://desktop.turbowarp.org/" target="_blank" class="text-gray-400 hover:text-white transition-colors">TurboWarp Desktop</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">游戏攻略</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">更新日志</a></li>
                     </ul>
                 </div>
                 
@@ -716,7 +914,7 @@
                 <div>
                     <h3 class="text-xl font-bold mb-4">订阅更新</h3>
                     <p class="text-gray-400 mb-4">
-                        订阅我们的通讯，获取最新产品更新和技术资讯。
+                        订阅我们的通讯，获取最新游戏更新和活动资讯。
                     </p>
                     <form id="subscribe-form" class="flex">
                         <input type="email" placeholder="您的邮箱地址" class="px-4 py-2 rounded-l-lg focus:outline-none flex-grow">
@@ -1114,7 +1312,7 @@
             
             // 添加文字标签
             const textGeometry = new THREE.PlaneGeometry(1.5, 0.5);
-            const textTexture = createTextTexture('COLID OS', '#ffffff', '24px Inter');
+            const textTexture = createTextTexture('丧尸入侵', '#ffffff', '24px Inter');
             const textMaterial = new THREE.MeshBasicMaterial({ 
                 map: textTexture,
                 transparent: true
