@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COLID - 创新科技解决方案</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP 动画库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#e6f0fa',
+                            100: '#cce0f5',
+                            200: '#99c2eb',
+                            300: '#66a3e0',
+                            400: '#3385d6',
+                            500: '#0066cc',
+                            600: '#0052a3',
+                            700: '#003d7a',
+                            800: '#002952',
+                            900: '#001429',
+                        },
+                        secondary: {
+                            50: '#fff3e6',
+                            100: '#ffe7cc',
+                            200: '#ffcf99',
+                            300: '#ffb766',
+                            400: '#ffa033',
+                            500: '#ff8800',
+                            600: '#cc6e00',
+                            700: '#995400',
+                            800: '#663a00',
+                            900: '#331f00',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* 暗黑模式核心变量定义 */
+        :root {
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --card-bg: #f1f5f9;
+        }
+
+        .dark {
+            --text-primary: #f8fafc;
+            --text-secondary: #e2e8f0;
+            --bg-primary: #121212;
+            --bg-secondary: #1e293b;
+            --card-bg: #334155;
+            color-scheme: dark;
+        }
+
+        /* 基础样式重写 */
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .bg-white {
+            background-color: var(--bg-primary) !important;
+        }
+
+        .bg-gray-50 {
+            background-color: var(--bg-secondary) !important;
+        }
+
+        .text-gray-800 {
+            color: var(--text-primary) !important;
+        }
+
+        .text-gray-600 {
+            color: var(--text-secondary) !important;
+        }
+
+        .bg-gray-100 {
+            background-color: var(--card-bg) !important;
+        }
+
+        .bg-gray-50 {
+            background-color: var(--card-bg) !important;
+        }
+
+        .hero-section {
+            background-image: url('https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/19478607d566407eb6c3c6c1a3d29283~tplv-a9rns2rl98-image.image?rcl=2025110821280618224FB838C12EBA1AEE&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765200508&x-signature=68SZaAsesz2VEKiTZda8fhevNRw%3D');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .parallax {
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            transform: translateZ(0);
+            transition: transform 0.3s ease-out;
+        }
+
+        .dark .border-gray-200 {
+            border-color: #475569;
+        }
+
+        .dark .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 滚动动画 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 3D 产品展示 */
+        #product-canvas {
+            width: 100%;
+            height: 400px;
+            background-color: transparent;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+            }
+
+            #product-canvas {
+                height: 300px;
+            }
+        }
+
+        /* 加载动画 */
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #0066cc;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 滚动指示器 */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-20px) translateX(-50%); }
+            60% { transform: translateY(-10px) translateX(-50%); }
+        }
+
+        /* 模态框暗黑模式适配 */
+        .dark #product-modal .bg-white {
+            background-color: #1e293b !important;
+        }
+
+        .dark #product-modal .text-gray-800 {
+            color: #f8fafc !important;
+        }
+
+        .dark #product-modal .text-gray-600 {
+            color: #e2e8f0 !important;
+        }
+
+        .dark #product-modal .bg-gray-50 {
+            background-color: #334155 !important;
+        }
+
+        .dark #product-modal .bg-gray-100 {
+            background-color: #475569 !important;
+        }
+
+        .dark #product-modal .border-gray-200 {
+            border-color: #64748b !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-95 backdrop-blur-sm shadow-sm transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <a href="#" class="flex items-center">
+                        <span class="text-2xl font-bold text-primary-500">COLID</span>
+                    </a>
+                </div>
+                
+                <!-- 桌面导航 -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-800 hover:text-primary-500 transition-colors">首页</a>
+                    <a href="#about" class="text-gray-800 hover:text-primary-500 transition-colors">关于我们</a>
+                    <a href="#products" class="text-gray-800 hover:text-primary-500 transition-colors">产品</a>
+                    <a href="#team" class="text-gray-800 hover:text-primary-500 transition-colors">团队</a>
+                    <a href="#contact" class="text-gray-800 hover:text-primary-500 transition-colors">联系我们</a>
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-moon text-gray-600"></i>
+                    </button>
+                </div>
+                
+                <!-- 移动端菜单按钮 -->
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="p-2 rounded-md text-gray-600 hover:text-primary-500 hover:bg-gray-100 focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 移动端导航菜单 -->
+            <div id="mobile-menu" class="md:hidden hidden pb-4">
+                <div class="flex flex-col space-y-3">
+                    <a href="#home" class="text-gray-800 hover:text-primary-500 transition-colors py-2">首页</a>
+                    <a href="#about" class="text-gray-800 hover:text-primary-500 transition-colors py-2">关于我们</a>
+                    <a href="#products" class="text-gray-800 hover:text-primary-500 transition-colors py-2">产品</a>
+                    <a href="#team" class="text-gray-800 hover:text-primary-500 transition-colors py-2">团队</a>
+                    <a href="#contact" class="text-gray-800 hover:text-primary-500 transition-colors py-2">联系我们</a>
+                    <button id="mobile-theme-toggle" class="flex items-center space-x-2 p-2 rounded-md text-gray-600 hover:text-primary-500 hover:bg-gray-100 focus:outline-none">
+                        <i class="fas fa-moon"></i>
+                        <span>切换主题</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 首屏 Hero 区域 -->
+    <section id="home" class="hero-section min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-primary-900/70 to-primary-700/50"></div>
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="hero-content text-center text-white max-w-3xl mx-auto">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                    丧尸入侵<br><span class="text-secondary-400">生存挑战</span>
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 opacity-90">
+                    体验刺激的生存类游戏，在丧尸横行的世界中生存下去，收集资源，建造基地，抵御丧尸的攻击
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#products" class="bg-secondary-500 hover:bg-secondary-600 text-white font-medium py-3 px-8 rounded-full transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 duration-300">
+                        探索产品
+                    </a>
+                    <a href="#contact" class="bg-transparent border-2 border-white hover:bg-white hover:text-primary-700 text-white font-medium py-3 px-8 rounded-full transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 duration-300">
+                        联系我们
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator text-white">
+            <i class="fas fa-chevron-down text-2xl"></i>
+        </div>
+    </section>
+
+    <!-- 关于我们 -->
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">关于我们</h2>
+                <div class="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    COLID 是一家专注于游戏开发的工作室，我们使用 TurboWarp Desktop 创作有趣的游戏作品，为玩家提供独特的游戏体验。
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="fade-in">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">关于我们</h3>
+                    <p class="text-gray-600 mb-6">
+                        COLID 是一家专注于游戏开发的团队，我们使用 <a href="https://desktop.turbowarp.org/" target="_blank" class="text-primary-500 hover:underline">TurboWarp Desktop</a>（Scratch 的增强版）创作有趣的游戏作品，为玩家提供独特的游戏体验。
+                    </p>
+                    <p class="text-gray-600 mb-6">
+                        我们的团队由热爱游戏开发的专业人士组成，致力于打造高质量、富有创意的游戏作品，让玩家享受游戏的乐趣。
+                    </p>
+                </div>
+                
+                <div class="fade-in">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">我们的理念</h3>
+                    <p class="text-gray-600 mb-6">
+                        我们相信游戏不仅是娱乐，更是一种艺术形式和表达方式。我们致力于通过游戏传递积极的价值观，激发玩家的创造力和想象力。
+                    </p>
+                    <p class="text-gray-600">
+                        我们的游戏作品注重玩家体验，追求创新和独特性，让每一位玩家都能在游戏中找到乐趣和挑战。
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 数据统计 -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20">
+                <div class="text-center p-6 bg-gray-50 rounded-lg shadow-md fade-in">
+                    <div class="text-4xl font-bold text-primary-500 mb-2">5+</div>
+                    <div class="text-gray-600">产品版本</div>
+                </div>
+                <div class="text-center p-6 bg-gray-50 rounded-lg shadow-md fade-in" style="transition-delay: 0.2s;">
+                    <div class="text-4xl font-bold text-primary-500 mb-2">0.01k+</div>
+                    <div class="text-gray-600">用户数量</div>
+                </div>
+                <div class="text-center p-6 bg-gray-50 rounded-lg shadow-md fade-in" style="transition-delay: 0.4s;">
+                    <div class="text-4xl font-bold text-primary-500 mb-2">20+</div>
+                    <div class="text-gray-600">功能特性</div>
+                </div>
+                <div class="text-center p-6 bg-gray-50 rounded-lg shadow-md fade-in" style="transition-delay: 0.6s;">
+                    <div class="text-4xl font-bold text-primary-500 mb-2">5+</div>
+                    <div class="text-gray-600">项目贡献者</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 产品展示 -->
+    <section id="products" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">我们的产品</h2>
+                <div class="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    探索 COLID 的创新产品系列，从操作系统到移动应用，我们提供全方位的解决方案。
+                </p>
+            </div>
+            
+            <!-- 3D 产品展示 -->
+            <div class="mb-16 fade-in">
+                <div class="bg-white p-4 rounded-xl shadow-lg">
+                    <canvas id="product-canvas" class="rounded-lg"></canvas>
+                </div>
+            </div>
+            
+            <!-- 产品列表 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- 产品 1: 丧尸入侵游戏 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 fade-in">
+                    <div class="h-64 bg-primary-100 flex items-center justify-center p-4">
+                        <div class="text-center">
+                            <img src="https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/afc3406749a4498f89b1f9ce9ea2a592.png~tplv-a9rns2rl98-24:720:720.png?rcl=202511082149076201ECDBCE704031B23D&rk3s=8e244e95&rrcfp=8a172a1a&x-expires=1763214547&x-signature=wxvbmWWXTaW2UWMQ8b1bB%2FXw9wA%3D" alt="丧尸入侵游戏图标" class="max-h-full max-w-full object-contain">
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">丧尸入侵游戏</h3>
+                        <p class="text-gray-600 mb-4">
+                            刺激的生存类游戏，由<a href="https://desktop.turbowarp.org/" target="_blank" class="text-primary-500 hover:underline">TurboWarp Desktop</a>（Scratch 的增强版）制作。在游戏中，你需要在丧尸横行的世界中生存下去，收集资源，建造基地，抵御丧尸的攻击。
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500 mb-4">
+                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full mr-2">游戏本体</span>
+                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">TurboWarp</span>
+                        </div>
+                        <button class="product-detail-btn text-primary-500 hover:text-primary-600 font-medium flex items-center" data-product="zombie-invasion">
+                            了解更多 <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 产品 2: 丧尸入侵模组 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 fade-in" style="transition-delay: 0.2s;">
+                    <div class="h-64 bg-primary-100 flex items-center justify-center p-4">
+                        <div class="text-center">
+                            <i class="fas fa-cubes text-8xl text-primary-500"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">丧尸入侵模组</h3>
+                        <p class="text-gray-600 mb-4">
+                            为"丧尸入侵"游戏设计的模组，添加了新的武器、敌人、地图和游戏模式，丰富游戏体验。
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500 mb-4">
+                            <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full mr-2">游戏模组</span>
+                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">扩展内容</span>
+                        </div>
+                        <button class="product-detail-btn text-primary-500 hover:text-primary-600 font-medium flex items-center" data-product="zombie-invasion-mod">
+                            了解更多 <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 团队展示 -->
+    <section id="team" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">我们的团队</h2>
+                <div class="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    由一群充满激情和创造力的专业人士组成，致力于推动科技创新。
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- 团队成员 1 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 fade-in">
+                    <div class="h-64 bg-primary-100 flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-user-circle text-8xl text-primary-300"></i>
+                        </div>
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-800 mb-1">张明</h3>
+                        <p class="text-primary-500 mb-3">创始人 & CEO</p>
+                        <p class="text-gray-600 text-sm mb-4">
+                            拥有10年软件开发经验，专注于操作系统架构设计。
+                        </p>
+                        <div class="flex justify-center space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 团队成员 2 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 fade-in" style="transition-delay: 0.2s;">
+                    <div class="h-64 bg-primary-100 flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-user-circle text-8xl text-primary-300"></i>
+                        </div>
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-800 mb-1">李华</h3>
+                        <p class="text-primary-500 mb-3">CTO</p>
+                        <p class="text-gray-600 text-sm mb-4">
+                            技术专家，负责产品核心架构和技术路线规划。
+                        </p>
+                        <div class="flex justify-center space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 团队成员 3 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 fade-in" style="transition-delay: 0.4s;">
+                    <div class="h-64 bg-primary-100 flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-user-circle text-8xl text-primary-300"></i>
+                        </div>
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-800 mb-1">王芳</h3>
+                        <p class="text-primary-500 mb-3">产品经理</p>
+                        <p class="text-gray-600 text-sm mb-4">
+                            负责产品规划和用户体验设计，专注于用户需求分析。
+                        </p>
+                        <div class="flex justify-center space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 团队成员 4 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 fade-in" style="transition-delay: 0.6s;">
+                    <div class="h-64 bg-primary-100 flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-user-circle text-8xl text-primary-300"></i>
+                        </div>
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-800 mb-1">陈强</h3>
+                        <p class="text-primary-500 mb-3">设计师</p>
+                        <p class="text-gray-600 text-sm mb-4">
+                            UI/UX设计师，负责产品界面设计和交互体验优化。
+                        </p>
+                        <div class="flex justify-center space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
+                                <i class="fab fa-dribbble"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 团队照片 -->
+            <div class="mt-16 fade-in">
+                <div class="bg-white p-4 rounded-xl shadow-lg">
+                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/d2ef1130dbe34332b369618aec981d4f~tplv-a9rns2rl98-image.image?rcl=2025110821280618224FB838C12EBA1AEE&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765200549&x-signature=06csiN3psGZ4rtULSLS11fPYqoY%3D" alt="团队合影" class="w-full h-auto rounded-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系我们 -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">联系我们</h2>
+                <div class="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    有任何问题或合作意向？请随时与我们联系，我们将尽快回复您。
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- 联系表单 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg fade-in">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">发送消息</h3>
+                    <form id="contact-form">
+                        <div class="mb-6">
+                            <label for="name" class="block text-gray-700 font-medium mb-2">姓名</label>
+                            <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="请输入您的姓名" required>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="email" class="block text-gray-700 font-medium mb-2">邮箱</label>
+                            <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="请输入您的邮箱" required>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="subject" class="block text-gray-700 font-medium mb-2">主题</label>
+                            <input type="text" id="subject" name="subject" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="请输入消息主题" required>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="message" class="block text-gray-700 font-medium mb-2">消息</label>
+                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="请输入您的消息" required></textarea>
+                        </div>
+                        
+                        <button type="submit" id="submit-btn" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center">
+                            <span>发送消息</span>
+                            <div class="loader ml-3 hidden"></div>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- 联系信息 -->
+                <div class="fade-in" style="transition-delay: 0.3s;">
+                    <div class="bg-primary-600 text-white p-8 rounded-xl shadow-lg mb-8">
+                        <h3 class="text-2xl font-bold mb-6">联系方式</h3>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="bg-primary-500 p-3 rounded-full mr-4">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-lg mb-1">地址</h4>
+                                    <p class="opacity-90">北京市海淀区中关村科技园区8号楼</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-primary-500 p-3 rounded-full mr-4">
+                                    <i class="fas fa-phone-alt"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-lg mb-1">电话</h4>
+                                    <p class="opacity-90">+86 10 8888 8888</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-primary-500 p-3 rounded-full mr-4">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-lg mb-1">邮箱</h4>
+                                    <p class="opacity-90">contact@colid.com</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 社交媒体 -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6">关注我们</h3>
+                        <div class="flex space-x-4">
+                            <a href="#" class="bg-gray-100 hover:bg-primary-100 text-gray-600 hover:text-primary-500 p-3 rounded-full transition-colors">
+                                <i class="fab fa-weixin text-xl"></i>
+                            </a>
+                            <a href="#" class="bg-gray-100 hover:bg-primary-100 text-gray-600 hover:text-primary-500 p-3 rounded-full transition-colors">
+                                <i class="fab fa-weibo text-xl"></i>
+                            </a>
+                            <a href="#" class="bg-gray-100 hover:bg-primary-100 text-gray-600 hover:text-primary-500 p-3 rounded-full transition-colors">
+                                <i class="fab fa-github text-xl"></i>
+                            </a>
+                            <a href="#" class="bg-gray-100 hover:bg-primary-100 text-gray-600 hover:text-primary-500 p-3 rounded-full transition-colors">
+                                <i class="fab fa-linkedin text-xl"></i>
+                            </a>
+                            <a href="#" class="bg-gray-100 hover:bg-primary-100 text-gray-600 hover:text-primary-500 p-3 rounded-full transition-colors">
+                                <i class="fab fa-twitter text-xl"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                <!-- 工作室信息 -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">COLID</h3>
+                    <p class="text-gray-400 mb-4">
+                        专注于游戏开发的团队，使用 Scratch 编程软件创作有趣的游戏作品，为玩家提供独特的游戏体验。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-weibo"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 快速链接 -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">快速链接</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-white transition-colors">首页</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">关于我们</a></li>
+                        <li><a href="#products" class="text-gray-400 hover:text-white transition-colors">产品</a></li>
+                        <li><a href="#team" class="text-gray-400 hover:text-white transition-colors">团队</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors">联系我们</a></li>
+                    </ul>
+                </div>
+                
+                <!-- 产品 -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">游戏产品</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#products" class="text-gray-400 hover:text-white transition-colors">丧尸入侵游戏</a></li>
+                        <li><a href="#products" class="text-gray-400 hover:text-white transition-colors">丧尸入侵模组</a></li>
+                        <li><a href="https://desktop.turbowarp.org/" target="_blank" class="text-gray-400 hover:text-white transition-colors">TurboWarp Desktop</a></li>
+                    </ul>
+                </div>
+                
+                <!-- 订阅 -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">订阅更新</h3>
+                    <p class="text-gray-400 mb-4">
+                        订阅我们的通讯，获取最新产品更新和技术资讯。
+                    </p>
+                    <form id="subscribe-form" class="flex">
+                        <input type="email" placeholder="您的邮箱地址" class="px-4 py-2 rounded-l-lg focus:outline-none flex-grow">
+                        <button type="submit" class="bg-secondary-500 hover:bg-secondary-600 text-white px-4 py-2 rounded-r-lg transition-colors">
+                            订阅
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 mb-4 md:mb-0">
+                        &copy; 2023 COLID. 保留所有权利。
+                    </p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">隐私政策</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">使用条款</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">Cookie 政策</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 产品详情模态框 -->
+    <div id="product-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50" id="modal-overlay"></div>
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative z-10">
+            <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 focus:outline-none">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <div class="p-8" id="modal-content">
+                <!-- 动态内容将通过 JavaScript 填充 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-primary-500 text-white p-3 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-primary-600">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // DOM 加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 导航栏滚动效果
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('shadow-md');
+                    navbar.classList.remove('shadow-sm');
+                } else {
+                    navbar.classList.remove('shadow-md');
+                    navbar.classList.add('shadow-sm');
+                }
+            });
+            
+            // 移动端菜单切换
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            menuToggle.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // 暗黑模式切换
+            const themeToggle = document.getElementById('theme-toggle');
+            const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+            const html = document.documentElement;
+            
+            // 检查本地存储中的主题偏好
+            if (localStorage.getItem('theme') === 'dark' || 
+                (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                html.classList.add('dark');
+                updateThemeIcons(true);
+            }
+            
+            function updateThemeIcons(isDark) {
+                const icon = themeToggle.querySelector('i');
+                const mobileIcon = mobileThemeToggle.querySelector('i');
+                
+                if (isDark) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                    mobileIcon.classList.remove('fa-moon');
+                    mobileIcon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                    mobileIcon.classList.remove('fa-sun');
+                    mobileIcon.classList.add('fa-moon');
+                }
+            }
+            
+            function toggleDarkMode() {
+                const isDark = html.classList.toggle('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                updateThemeIcons(isDark);
+                
+                // 更新导航栏样式
+                if (isDark) {
+                    navbar.classList.add('bg-gray-900', 'text-white');
+                    navbar.classList.remove('bg-white');
+                } else {
+                    navbar.classList.remove('bg-gray-900', 'text-white');
+                    navbar.classList.add('bg-white');
+                }
+            }
+            
+            themeToggle.addEventListener('click', toggleDarkMode);
+            mobileThemeToggle.addEventListener('click', toggleDarkMode);
+            
+            // 初始化导航栏样式
+            if (html.classList.contains('dark')) {
+                navbar.classList.add('bg-gray-900', 'text-white');
+                navbar.classList.remove('bg-white');
+            }
+            
+            // 滚动动画
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const fadeInObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            fadeElements.forEach(element => {
+                fadeInObserver.observe(element);
+            });
+            
+            // 返回顶部按钮
+            const backToTopButton = document.getElementById('back-to-top');
+            
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    backToTopButton.classList.remove('opacity-0', 'invisible');
+                    backToTopButton.classList.add('opacity-100', 'visible');
+                } else {
+                    backToTopButton.classList.add('opacity-0', 'invisible');
+                    backToTopButton.classList.remove('opacity-100', 'visible');
+                }
+            });
+            
+            backToTopButton.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // 产品详情模态框
+            const productModal = document.getElementById('product-modal');
+            const modalOverlay = document.getElementById('modal-overlay');
+            const closeModal = document.getElementById('close-modal');
+            const modalContent = document.getElementById('modal-content');
+            const productDetailBtns = document.querySelectorAll('.product-detail-btn');
+            
+            // 产品详情数据
+            const productDetails = {
+                'zombie-invasion': {
+                    title: '丧尸入侵游戏',
+                    subtitle: '刺激的生存类游戏',
+                    image: 'https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/72d526c84c6d47bda90df3b1e9a52047~tplv-a9rns2rl98-image.image?rcl=2025110821280618224FB838C12EBA1AEE&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765200533&x-signature=aP6zqCerYdxfpZQ7pQdK5TIL90I%3D',
+                    description: '《丧尸入侵》是一款刺激的生存类游戏，玩家需要在丧尸横行的世界中生存下去。游戏由Scratch编程软件制作，操作简单直观，适合各个年龄段的玩家。在游戏中，你需要收集资源，建造基地，抵御丧尸的攻击，探索未知区域，寻找生存的希望。',
+                    features: [
+                        '紧张刺激的生存 gameplay',
+                        '多种武器和道具系统',
+                        '丰富的敌人类型和Boss战',
+                        '精美的像素风格 graphics',
+                        '开放的游戏世界，自由探索',
+                        '支持自定义模组扩展'
+                    ],
+                    specs: {
+                        '平台': '支持Windows、macOS和Linux',
+                        '处理器': 'Intel Core 2 Duo 或更高',
+                        '内存': '最低2GB RAM',
+                        '存储': '最低100MB可用空间',
+                        'TurboWarp Desktop版本': '1.0或更高'
+                    },
+                    downloads: [
+                        {
+                            name: '『来自123云盘VIP会员liha的分享』丧尸入侵游戏本体',
+                            url: 'https://www.123865.com/s/zjgVTd-h9RoA?pwd=OVXE#',
+                            code: 'OVXE',
+                            type: 'game'
+                        }
+                    ]
+                },
+                
+                'zombie-invasion-mod': {
+                    title: '丧尸入侵模组',
+                    subtitle: '丰富游戏体验的扩展内容',
+                    image: 'https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/72d526c84c6d47bda90df3b1e9a52047~tplv-a9rns2rl98-image.image?rcl=2025110821280618224FB838C12EBA1AEE&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765200533&x-signature=aP6zqCerYdxfpZQ7pQdK5TIL90I%3D',
+                    description: '这是为《丧尸入侵》游戏设计的官方模组，添加了大量新内容，丰富游戏体验。模组需要先安装游戏本体才能使用。',
+                    features: [
+                        '新的武器系统，包括火焰喷射器、火箭筒等',
+                        '新的敌人类型，如变异丧尸、巨型Boss等',
+                        '新的地图和场景，扩大游戏世界',
+                        '新的游戏模式，如生存挑战、护送任务等',
+                        '新的道具和装备系统',
+                        '支持与其他玩家合作游戏'
+                    ],
+                    specs: {
+                        '平台': '支持Windows、macOS和Linux',
+                        '处理器': 'Intel Core 2 Duo 或更高',
+                        '内存': '最低2GB RAM',
+                        '存储': '最低50MB可用空间',
+                        '《丧尸入侵》游戏版本': '1.0或更高'
+                    },
+                    downloads: [
+                        {
+                            name: '『来自123云盘VIP会员liha的分享』丧尸入侵游戏模组',
+                            url: 'https://www.123865.com/s/zjgVTd-39RoA?pwd=YnNt#',
+                            code: 'YnNt',
+                            type: 'mod'
+                        }
+                    ]
+                }
+            };
+            
+            // 打开模态框
+            productDetailBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product');
+                    const product = productDetails[productId];
+                    
+                    if (product) {
+                        // 填充模态框内容
+                        modalContent.innerHTML = `
+                            <div class="mb-6">
+                                <img src="${product.image}" alt="${product.title}" class="w-full h-64 object-cover rounded-lg">
+                            </div>
+                            <h2 class="text-3xl font-bold text-gray-800 mb-2">${product.title}</h2>
+                            <p class="text-primary-500 mb-6">${product.subtitle}</p>
+                            <p class="text-gray-600 mb-6">${product.description}</p>
+                            
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">主要特性</h3>
+                            <ul class="list-disc pl-6 mb-6 text-gray-600">
+                                ${product.features.map(feature => `<li class="mb-2">${feature}</li>`).join('')}
+                            </ul>
+                            
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">系统要求</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                ${Object.entries(product.specs).map(([key, value]) => `
+                                    <div class="bg-gray-50 p-3 rounded-lg">
+                                        <span class="font-medium">${key}:</span> ${value}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="mt-8">
+                                <h3 class="text-xl font-bold text-gray-800 mb-4">下载资源</h3>
+                                <div class="space-y-4">
+                                    ${product.downloads && product.downloads.length > 0 ? 
+                                        product.downloads.map(download => `
+                                            <div class="bg-gray-50 p-4 rounded-lg">
+                                                <div class="flex items-start">
+                                                    <div class="mr-4 mt-1">
+                                                        <i class="fas ${download.type === 'game' ? 'fa-gamepad' : 'fa-puzzle-piece'} text-primary-500 text-xl"></i>
+                                                    </div>
+                                                    <div class="flex-grow">
+                                                        <p class="font-medium mb-2">${download.name}</p>
+                                                        <p class="text-sm text-gray-500 mb-3">
+                                                            ${download.type === 'game' ? '游戏本体，可直接运行' : '游戏模组，需先安装游戏本体'}
+                                                        </p>
+                                                        <div class="flex flex-col sm:flex-row gap-3">
+                                                            <a href="${download.url}" target="_blank" class="bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-lg transition-colors text-center">
+                                                                <i class="fas fa-download mr-2"></i> 立即下载
+                                                            </a>
+                                                            <div class="flex items-center bg-gray-100 p-2 rounded-lg">
+                                                                <span class="font-medium mr-2">提取码：</span>
+                                                                <span class="bg-white px-3 py-1 rounded border border-gray-200">${download.code}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `).join('') : 
+                                        `<p class="text-gray-500">暂无下载资源</p>`
+                                    }
+                                </div>
+                            </div>
+                        `;
+                        
+                        // 显示模态框
+                        productModal.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden'; // 防止背景滚动
+                    }
+                });
+            });
+            
+            // 关闭模态框
+            function closeModalFunc() {
+                productModal.classList.add('hidden');
+                document.body.style.overflow = ''; // 恢复背景滚动
+            }
+            
+            closeModal.addEventListener('click', closeModalFunc);
+            modalOverlay.addEventListener('click', closeModalFunc);
+            
+            // 联系表单提交
+            const contactForm = document.getElementById('contact-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const loader = submitBtn.querySelector('.loader');
+            
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // 显示加载状态
+                submitBtn.disabled = true;
+                loader.classList.remove('hidden');
+                
+                // 模拟表单提交
+                setTimeout(function() {
+                    // 隐藏加载状态
+                    submitBtn.disabled = false;
+                    loader.classList.add('hidden');
+                    
+                    // 显示成功消息
+                    alert('消息已成功发送！我们将尽快与您联系。');
+                    
+                    // 重置表单
+                    contactForm.reset();
+                }, 1500);
+            });
+            
+            // 订阅表单提交
+            const subscribeForm = document.getElementById('subscribe-form');
+            
+            subscribeForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const emailInput = this.querySelector('input[type="email"]');
+                const email = emailInput.value.trim();
+                
+                if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    // 模拟订阅提交
+                    alert('订阅成功！感谢您的关注。');
+                    emailInput.value = '';
+                } else {
+                    alert('请输入有效的邮箱地址。');
+                }
+            });
+            
+            // 初始化 3D 产品展示
+            initProduct3D();
+        });
+        
+        // 3D 产品展示
+        function initProduct3D() {
+            const canvas = document.getElementById('product-canvas');
+            
+            // 创建场景
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf8fafc);
+            
+            // 创建相机
+            const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+            camera.position.z = 5;
+            
+            // 创建渲染器
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            
+            // 添加灯光
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+            
+            // 创建几何体
+            const geometry = new THREE.BoxGeometry(2, 2, 2);
+            
+            // 创建材质
+            const materials = [
+                new THREE.MeshStandardMaterial({ color: 0x0066cc }), // 前面
+                new THREE.MeshStandardMaterial({ color: 0x0066cc }), // 后面
+                new THREE.MeshStandardMaterial({ color: 0xff8800 }), // 上面
+                new THREE.MeshStandardMaterial({ color: 0xff8800 }), // 下面
+                new THREE.MeshStandardMaterial({ color: 0x0066cc }), // 右面
+                new THREE.MeshStandardMaterial({ color: 0x0066cc })  // 左面
+            ];
+            
+            // 创建网格
+            const cube = new THREE.Mesh(geometry, materials);
+            scene.add(cube);
+            
+            // 添加文字标签
+            const textGeometry = new THREE.PlaneGeometry(1.5, 0.5);
+            const textTexture = createTextTexture('COLID OS', '#ffffff', '24px Inter');
+            const textMaterial = new THREE.MeshBasicMaterial({ 
+                map: textTexture,
+                transparent: true
+            });
+            const text = new THREE.Mesh(textGeometry, textMaterial);
+            text.position.set(0, 0, 1.01); // 放在立方体前面
+            cube.add(text);
+            
+            // 动画循环
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                // 旋转立方体
+                cube.rotation.x += 0.005;
+                cube.rotation.y += 0.01;
+                
+                renderer.render(scene, camera);
+            }
+            
+            // 处理窗口大小变化
+            window.addEventListener('resize', function() {
+                camera.aspect = canvas.clientWidth / canvas.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            });
+            
+            // 创建文字纹理
+            function createTextTexture(text, color, font) {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 512;
+                canvas.height = 128;
+                
+                context.fillStyle = 'rgba(0, 0, 0, 0)';
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                
+                context.font = font;
+                context.fillStyle = color;
+                context.textAlign = 'center';
+                context.textBaseline = 'middle';
+                context.fillText(text, canvas.width / 2, canvas.height / 2);
+                
+                const texture = new THREE.CanvasTexture(canvas);
+                return texture;
+            }
+            
+            // 开始动画
+            animate();
+        }
+    </script>
+</body>
+</html>
